@@ -15,9 +15,9 @@ const SingIn: React.FC = () => (
       <form>
         <h1>Faca o seu logon</h1>
 
-        <Input placeholder="E-mail" />
+        <Input name="email" placeholder="E-mail" />
 
-        <Input type="password" placeholder="Senha" />
+        <Input name="password" type="password" placeholder="Senha" />
 
         <Button type="submit">Entrar</Button>
 
