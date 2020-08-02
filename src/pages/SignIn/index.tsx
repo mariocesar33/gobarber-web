@@ -1,41 +1,58 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useContext } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
+import { AuthContext } from '../../context/AuthContext'
+import getValidationErros from '../../utils/getValidationErrors';
+
 import logoImg from '../../assets/logo.svg';
+
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import getValidationErros from '../../utils/getValidationErrors';
 import { Container, Content, Background } from './styles';
+
+interface SignInFormData {
+  email: string,
+  password: string,
+}
 
 const SingIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  console.log(formRef);
+  const { user, signIn } = useContext(AuthContext);
 
-  const handleSubmit = useCallback(async(data: object) => {
-    try {
-      formRef.current?.setErrors({});
+  console.log(user);
+  
+  const handleSubmit = useCallback(
+    async(data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('campo obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().min(8, 'campo obrigatório'),
-      });
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('campo obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().min(6, 'campo obrigatório'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-    } catch (err) {
-      const errors = getValidationErros(err);
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      formRef.current?.setErrors(errors);
-    }
-  }, []);
+        signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        const errors = getValidationErros(err);
+
+        formRef.current?.setErrors(errors);
+      }
+    }, [signIn],
+  );
 
   return (
     <Container>
@@ -63,6 +80,6 @@ const SingIn: React.FC = () => {
       <Background />
     </Container>
   );
-}
+};
 
 export default SingIn;
