@@ -1,5 +1,9 @@
-import React, { createContext, useCallback, useState, useContext } from 'react';
+import React, { createContext, useCallback, useState, useContext, ReactNode } from 'react';
 import api from '../services/api';
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
 interface AuthState {
   token: string;
@@ -21,19 +25,19 @@ const AuthContext = createContext<AuthContextData>(
   {} as AuthContextData
 );
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@GoBarber:token');
     const user = localStorage.getItem('@Gobarber:user');
 
     if (token && user) {
-      return { token, user: JSON.parse(user)};
+      return { token, user: JSON.parse(user) };
     }
 
     return {} as AuthState;
   });
 
-  const signIn = useCallback(async({ email, password}) => {
+  const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
     const response = await api.post('sessions', {
       email,
       password,

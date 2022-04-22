@@ -3,7 +3,7 @@ import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import api from '../../services/api';
 
@@ -25,9 +25,9 @@ interface SignUpFormData {
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
-  const history = useHistory();
+  const history = useNavigate();
 
-  const handleSubmit = useCallback(async(data: SignUpFormData) => {
+  const handleSubmit = useCallback(async (data: SignUpFormData) => {
     try {
       formRef.current?.setErrors({});
 
@@ -45,7 +45,7 @@ const SignUp: React.FC = () => {
 
       await api.post('/users', data);
 
-      history.push('/');
+      history('/');
 
       addToast({
         type: 'success',
@@ -68,39 +68,39 @@ const SignUp: React.FC = () => {
       });
     }
   }, [addToast, history],
-);
+  );
 
   return (
     <Container>
-    <Background />
+      <Background />
 
-    <Content>
-      <AnimationContainer>
-        <img src={logoImg} alt="GoBarber" />
+      <Content>
+        <AnimationContainer>
+          <img src={logoImg} alt="GoBarber" />
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faca o seu cadastro</h1>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faca o seu cadastro</h1>
 
-          <Input name="name" icon={FiUser} placeholder="Nome" />
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
+            <Input name="name" icon={FiUser} placeholder="Nome" />
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
 
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
 
-          <Button type="submit">Cadastrar</Button>
-        </Form>
+            <Button type="submit">Cadastrar</Button>
+          </Form>
 
-        <Link to="/">
-          <FiArrowLeft />
-          Voltar para logon
-        </Link>
-      </AnimationContainer>
-    </Content>
-  </Container>
+          <Link to="/">
+            <FiArrowLeft />
+            Voltar para logon
+          </Link>
+        </AnimationContainer>
+      </Content>
+    </Container>
   );
 };
 
